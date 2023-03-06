@@ -1,4 +1,4 @@
-;;; ruby-ts-mode.el --- Major mode for editing Ruby files using tree-sitter -*- lexical-binding: t; -*-
+;;; regex-ts-mode.el --- Major mode for editing Ruby files using tree-sitter -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2022-2023 Free Software Foundation, Inc.
 
@@ -86,16 +86,23 @@
   (treesit-font-lock-rules
 
    :language 'regex
-   :feature 'operator
+   :feature 'type
    `(["*" "+" "?" "|" "=" "<=" "!" "<!"] @font-lock-type-face)
 
    :language 'regex
    :feature 'constant
-   `((class_character) @font-lock-constant-face))
+   `((class_character) @font-lock-constant-face)
 
-   
+   :language 'regex
+   :feature 'group
+   `((non_capturing_group "(?:" @font-lock-constant-face))
 
-  "Tree-sitter font-lock settings for `haskell-ts-mode'.")
+   :language 'regex
+   :feature 'group2
+   `((pattern_character @font-lock-constant-face)))
+
+
+  "Tree-sitter font-lock settings for `regex-ts-mode'.")
 
 ;;;###autoload
 (define-derived-mode regex-ts-mode prog-mode "Regex"
@@ -108,8 +115,9 @@
     ;; Font-lock.
     (setq-local treesit-font-lock-settings regex-ts-mode--treesit-font-lock-settings)
     (setq-local treesit-font-lock-feature-list
-      '(( type keyword include definition function variable comment conditional)))
+      '((type constant group group2)))
 
     (treesit-major-mode-setup))
 
 (provide 'regex-ts-mode)
+;;; regex-ts-mode.el ends here
